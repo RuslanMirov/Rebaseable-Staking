@@ -27,115 +27,86 @@ contract('StakingRewards', function ([ownerAddress, userAddress, userAddress1, u
   });
 
   describe('Staking', function () {
-    describe('Call Start', function () {
-      it('initaial Values', async function () {
-        expect(await this.stakingRewards.rewardsDistribution()).to.be.equal(ownerAddress);
-        assert.equal(Number(await this.stakingRewards.rewardRate()), Number(0))
-        assert.equal(Number(await this.stakingRewards.rewardsDuration()), Number(rewardDuration))
-      });
+    // describe('Call Start', function () {
+    //   it('initaial Values', async function () {
+    //     expect(await this.stakingRewards.rewardsDistribution()).to.be.equal(ownerAddress);
+    //     assert.equal(Number(await this.stakingRewards.rewardRate()), Number(0))
+    //     assert.equal(Number(await this.stakingRewards.rewardsDuration()), Number(rewardDuration))
+    //   });
+    //
+    //   it('from RewardsDistribution', async function () {
+    //     await this.rewards.transfer(this.stakingRewards.address, 500, { from: ownerAddress });
+    //     await this.stakingRewards.start({ from: userAddress }).should.be.rejectedWith("Caller is not RewardsDistribution contract");
+    //   });
+    //
+    //   it('from non RewardsDistribution', async function () {
+    //     await this.rewards.transfer(this.stakingRewards.address, 500, { from: ownerAddress });
+    //     expect(await this.stakingRewards.rewardsDistribution()).to.be.equal(ownerAddress);
+    //   });
+    //
+    //   it('when 0 reward Token on staking contrat', async function () {
+    //     await this.stakingRewards.start({ from: ownerAddress }).should.be.rejectedWith("Invalid balance");
+    //   });
+    //
+    //   it('when reward Token present on staking contrat', async function () {
+    //     await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
+    //     await this.stakingRewards.start({ from: ownerAddress });
+    //     assert.equal(Number(await this.stakingRewards.rewardRate()), Number(10333)); // 50000000000/rewardDuration
+    //   });
+    //  });
 
-      it('from RewardsDistribution', async function () {
-        await this.rewards.transfer(this.stakingRewards.address, 500, { from: ownerAddress });
-        await this.stakingRewards.start({ from: userAddress }).should.be.rejectedWith("Caller is not RewardsDistribution contract");
-      });
+    // describe('rewardPerToken', function () {
+    //   it('should return 0', async function () {
+    //     assert.equal(Number(await this.stakingRewards.rewardPerToken()), Number(0));
+    //   });
+    //
+    //   it('should be > 0', async function () {
+    //     await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
+    //     await this.stakingRewards.start({ from: ownerAddress });
+    //
+    //     this.univ2.faucet(ownerAddress, 1000);
+    //     this.univ2.approve(this.stakingRewards.address, 1000, { from: ownerAddress });
+    //     await this.stakingRewards.stake(500, { from: ownerAddress });
+    //     expect(await this.stakingRewards.rewardPerToken() > 0).to.be.equal(true);
+    //   });
+    //
+    //   it('should increase on positive rebase', async function () {
+    //     await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
+    //     await this.stakingRewards.start({ from: ownerAddress });
+    //
+    //     this.univ2.faucet(ownerAddress, 1000);
+    //     this.univ2.approve(this.stakingRewards.address, 1000, { from: ownerAddress });
+    //     await this.stakingRewards.stake(500, { from: ownerAddress });
+    //
+    //     const initialRewardPerToken = await this.stakingRewards.rewardPerToken();
+    //     await this.rewards.rebase("1000000000000000000", { from:ownerAddress })
+    //
+    //     const postRewardPerToken = await this.stakingRewards.rewardPerToken();
+    //
+    //     await this.stakingRewards.getReward({ from: ownerAddress });
+    //
+    //     expect(postRewardPerToken > initialRewardPerToken).to.be.equal(true);
+    //   });
+    //
+    //   it('should decrease on negative rebase', async function () {
+    //     await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
+    //     await this.stakingRewards.start({ from: ownerAddress });
+    //
+    //     this.univ2.faucet(ownerAddress, 1000);
+    //     this.univ2.approve(this.stakingRewards.address, 1000, { from: ownerAddress });
+    //     await this.stakingRewards.stake(500, { from: ownerAddress });
+    //
+    //     const initialRewardPerToken = await this.stakingRewards.rewardPerToken();
+    //     await this.rewards.rebase("-1000000000000000000", { from:ownerAddress })
+    //     const postRewardPerToken = await this.stakingRewards.rewardPerToken();
+    //
+    //     expect(postRewardPerToken < initialRewardPerToken).to.be.equal(true);
+    //   });
+    // });
 
-      it('from non RewardsDistribution', async function () {
-        await this.rewards.transfer(this.stakingRewards.address, 500, { from: ownerAddress });
-        expect(await this.stakingRewards.rewardsDistribution()).to.be.equal(ownerAddress);
-      });
 
-      it('when 0 reward Token on staking contrat', async function () {
-        await this.stakingRewards.start({ from: ownerAddress }).should.be.rejectedWith("Invalid balance");
-      });
-
-      it('when reward Token present on staking contrat', async function () {
-        await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
-        await this.stakingRewards.start({ from: ownerAddress });
-        assert.equal(Number(await this.stakingRewards.rewardRate()), Number(10333)); // 50000000000/rewardDuration
-      });
-   });
-
-    describe('rewardPerToken', function () {
-      it('should return 0', async function () {
-        assert.equal(Number(await this.stakingRewards.rewardPerToken()), Number(0));
-      });
-
-      it('should be > 0', async function () {
-        await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
-        await this.stakingRewards.start({ from: ownerAddress });
-
-        this.univ2.faucet(ownerAddress, 1000);
-        this.univ2.approve(this.stakingRewards.address, 1000, { from: ownerAddress });
-        await this.stakingRewards.stake(500, { from: ownerAddress });
-        expect(await this.stakingRewards.rewardPerToken() > 0).to.be.equal(true);
-      });
-
-      it('should increase on positive rebase', async function () {
-        await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
-        await this.stakingRewards.start({ from: ownerAddress });
-
-        this.univ2.faucet(ownerAddress, 1000);
-        this.univ2.approve(this.stakingRewards.address, 1000, { from: ownerAddress });
-        await this.stakingRewards.stake(500, { from: ownerAddress });
-
-        const initialRewardPerToken = await this.stakingRewards.rewardPerToken();
-        await this.rewards.rebase("1000000000000000000", { from:ownerAddress })
-
-        const postRewardPerToken = await this.stakingRewards.rewardPerToken();
-
-        await this.stakingRewards.getReward({ from: ownerAddress });
-
-        expect(postRewardPerToken > initialRewardPerToken).to.be.equal(true);
-      });
-
-      it('should decrease on negative rebase', async function () {
-        await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
-        await this.stakingRewards.start({ from: ownerAddress });
-
-        this.univ2.faucet(ownerAddress, 1000);
-        this.univ2.approve(this.stakingRewards.address, 1000, { from: ownerAddress });
-        await this.stakingRewards.stake(500, { from: ownerAddress });
-
-        const initialRewardPerToken = await this.stakingRewards.rewardPerToken();
-        await this.rewards.rebase("-1000000000000000000", { from:ownerAddress })
-        const postRewardPerToken = await this.stakingRewards.rewardPerToken();
-
-        expect(postRewardPerToken < initialRewardPerToken).to.be.equal(true);
-      });
-    });
-
-    describe('earned', function () {
-      it('should be 0 when not staking', async function () {
-        assert.equal(Number(await this.stakingRewards.earned(userAddress)), Number(0));
-      });
-
-      it('rewardRate should increase if new rewards come before DURATION ends', async function () {
-        await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
-        await this.stakingRewards.start({ from: ownerAddress });
-
-        const initialRate = await this.stakingRewards.rewardRate();
-
-        await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
-        await this.stakingRewards.start({ from: ownerAddress });
-
-        const afterRate = await this.stakingRewards.rewardRate();
-
-        expect(initialRate < afterRate).to.be.equal(true);
-      });
-
-      it('should be > 0 when staking', async function () {
-        await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
-        await this.stakingRewards.start({ from: ownerAddress });
-
-        this.univ2.faucet(ownerAddress, 1000);
-        this.univ2.approve(this.stakingRewards.address, 1000, { from: ownerAddress });
-        await this.stakingRewards.stake(500, { from: ownerAddress });
-
-        await timeMachine.advanceTimeAndBlock(duration.seconds(3600))
-        expect(await this.stakingRewards.earned(ownerAddress) > 0).to.be.equal(true);
-      });
-
-      it('Earned reward decrease on negative rebase for a few users with the same shares', async function () {
+    describe('earned exit ', function () {
+      it('Earned rewards decrease on negative rebase for a few users with the same shares after exit', async function () {
         await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
         await this.stakingRewards.start({ from: ownerAddress });
 
@@ -153,7 +124,7 @@ contract('StakingRewards', function ([ownerAddress, userAddress, userAddress1, u
         this.univ2.approve(this.stakingRewards.address, 1000, { from: userAddress });
         await this.stakingRewards.stake(500, { from: userAddress });
 
-        await timeMachine.advanceTimeAndBlock(duration.seconds(3600))
+        await timeMachine.advanceTimeAndBlock(duration.weeks(36))
 
         const initialRewards1 = await this.stakingRewards.earned(ownerAddress);
         const initialRewards2 = await this.stakingRewards.earned(userAddress);
@@ -166,17 +137,17 @@ contract('StakingRewards', function ([ownerAddress, userAddress, userAddress1, u
         const userBalanceBefore1 = Number(await this.rewards.balanceOf(ownerAddress));
         const userBalanceBefore2 = Number(await this.rewards.balanceOf(userAddress));
 
-        console.log("User 1 balance before getReward", userBalanceBefore1);
-        console.log("User 2 balance before getReward", userBalanceBefore2);
+        console.log("User 1 balance before exit", userBalanceBefore1);
+        console.log("User 2 balance before exit", userBalanceBefore2);
 
-        await this.stakingRewards.getReward({ from:ownerAddress });
-        await this.stakingRewards.getReward({ from:userAddress });
+        await this.stakingRewards.exit({ from:ownerAddress });
+        await this.stakingRewards.exit({ from:userAddress });
 
         const userBalanceAfter1 = Number(await this.rewards.balanceOf(ownerAddress));
         const userBalanceAfter2 = Number(await this.rewards.balanceOf(userAddress));
 
-        console.log("User 1 balance after getReward", userBalanceAfter1);
-        console.log("User 2 balance after getReward", userBalanceAfter2);
+        console.log("User 1 balance after exit", userBalanceAfter1);
+        console.log("User 2 balance after exit", userBalanceAfter2);
 
 
         expect(initialRewards1 > postRewards1).to.be.equal(true);
@@ -184,9 +155,13 @@ contract('StakingRewards', function ([ownerAddress, userAddress, userAddress1, u
 
         expect(userBalanceAfter1 > userBalanceBefore1).to.be.equal(true);
         expect(userBalanceAfter2 > userBalanceBefore2).to.be.equal(true);
+
+        console.log(
+          Number(await this.rewards.balanceOf(this.stakingRewards.address))
+        )
       });
 
-      it('Earned reward decrease on negative rebase for a few users with NOT the same shares', async function () {
+      it('Earned reward decrease on negative rebase for a few users with NOT the same shares after exit', async function () {
         await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
         await this.stakingRewards.start({ from: ownerAddress });
 
@@ -204,7 +179,7 @@ contract('StakingRewards', function ([ownerAddress, userAddress, userAddress1, u
         this.univ2.approve(this.stakingRewards.address, 1000, { from: userAddress });
         await this.stakingRewards.stake(500, { from: userAddress });
 
-        await timeMachine.advanceTimeAndBlock(duration.seconds(3600))
+        await timeMachine.advanceTimeAndBlock(duration.weeks(36))
 
         const initialRewards1 = await this.stakingRewards.earned(ownerAddress);
         const initialRewards2 = await this.stakingRewards.earned(userAddress);
@@ -217,17 +192,17 @@ contract('StakingRewards', function ([ownerAddress, userAddress, userAddress1, u
         const userBalanceBefore1 = Number(await this.rewards.balanceOf(ownerAddress));
         const userBalanceBefore2 = Number(await this.rewards.balanceOf(userAddress));
 
-        console.log("User 1 balance before getReward", userBalanceBefore1);
-        console.log("User 2 balance before getReward", userBalanceBefore2);
+        console.log("User 1 balance before exit", userBalanceBefore1);
+        console.log("User 2 balance before exit", userBalanceBefore2);
 
-        await this.stakingRewards.getReward({ from:ownerAddress });
-        await this.stakingRewards.getReward({ from:userAddress });
+        await this.stakingRewards.exit({ from:ownerAddress });
+        await this.stakingRewards.exit({ from:userAddress });
 
         const userBalanceAfter1 = Number(await this.rewards.balanceOf(ownerAddress));
         const userBalanceAfter2 = Number(await this.rewards.balanceOf(userAddress));
 
-        console.log("User 1 balance after getReward", userBalanceAfter1);
-        console.log("User 2 balance after getReward", userBalanceAfter2);
+        console.log("User 1 balance after exit", userBalanceAfter1);
+        console.log("User 2 balance after exit", userBalanceAfter2);
 
 
         expect(initialRewards1 > postRewards1).to.be.equal(true);
@@ -239,7 +214,7 @@ contract('StakingRewards', function ([ownerAddress, userAddress, userAddress1, u
         expect(userBalanceAfter1 > userBalanceBefore2).to.be.equal(true);
       });
 
-      it('Earned reward increase on positive rebase for a few users with NOT the same shares', async function () {
+      it('Earned reward increase on positive rebase for a few users with NOT the same shares after exit', async function () {
         await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
         await this.stakingRewards.start({ from: ownerAddress });
 
@@ -257,7 +232,7 @@ contract('StakingRewards', function ([ownerAddress, userAddress, userAddress1, u
         this.univ2.approve(this.stakingRewards.address, 1000, { from: userAddress });
         await this.stakingRewards.stake(500, { from: userAddress });
 
-        await timeMachine.advanceTimeAndBlock(duration.seconds(3600))
+        await timeMachine.advanceTimeAndBlock(duration.weeks(36))
 
         const initialRewards1 = await this.stakingRewards.earned(ownerAddress);
         const initialRewards2 = await this.stakingRewards.earned(userAddress);
@@ -270,17 +245,17 @@ contract('StakingRewards', function ([ownerAddress, userAddress, userAddress1, u
         const userBalanceBefore1 = Number(await this.rewards.balanceOf(ownerAddress));
         const userBalanceBefore2 = Number(await this.rewards.balanceOf(userAddress));
 
-        console.log("User 1 balance before getReward", userBalanceBefore1);
-        console.log("User 2 balance before getReward", userBalanceBefore2);
+        console.log("User 1 balance before exit", userBalanceBefore1);
+        console.log("User 2 balance before exit", userBalanceBefore2);
 
-        await this.stakingRewards.getReward({ from:ownerAddress });
-        await this.stakingRewards.getReward({ from:userAddress });
+        await this.stakingRewards.exit({ from:ownerAddress });
+        await this.stakingRewards.exit({ from:userAddress });
 
         const userBalanceAfter1 = Number(await this.rewards.balanceOf(ownerAddress));
         const userBalanceAfter2 = Number(await this.rewards.balanceOf(userAddress));
 
-        console.log("User 1 balance after getReward", userBalanceAfter1);
-        console.log("User 2 balance after getReward", userBalanceAfter2);
+        console.log("User 1 balance after exit", userBalanceAfter1);
+        console.log("User 2 balance after exit", userBalanceAfter2);
 
         expect(initialRewards1 < postRewards1).to.be.equal(true);
         expect(initialRewards2 < postRewards2).to.be.equal(true);
@@ -290,7 +265,7 @@ contract('StakingRewards', function ([ownerAddress, userAddress, userAddress1, u
       });
 
 
-      it('Earned reward increase on positive rebase for a few users with the same shares', async function () {
+      it('Earned reward increase on positive rebase for a few users with the same shares after exit', async function () {
         await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
         await this.stakingRewards.start({ from: ownerAddress });
 
@@ -308,7 +283,7 @@ contract('StakingRewards', function ([ownerAddress, userAddress, userAddress1, u
         this.univ2.approve(this.stakingRewards.address, 1000, { from: userAddress });
         await this.stakingRewards.stake(500, { from: userAddress });
 
-        await timeMachine.advanceTimeAndBlock(duration.seconds(3600))
+        await timeMachine.advanceTimeAndBlock(duration.weeks(36))
 
         const initialRewards1 = await this.stakingRewards.earned(ownerAddress);
         const initialRewards2 = await this.stakingRewards.earned(userAddress);
@@ -321,17 +296,17 @@ contract('StakingRewards', function ([ownerAddress, userAddress, userAddress1, u
         const userBalanceBefore1 = Number(await this.rewards.balanceOf(ownerAddress));
         const userBalanceBefore2 = Number(await this.rewards.balanceOf(userAddress));
 
-        console.log("User 1 balance before getReward", userBalanceBefore1);
-        console.log("User 2 balance before getReward", userBalanceBefore2);
+        console.log("User 1 balance before exit", userBalanceBefore1);
+        console.log("User 2 balance before exit", userBalanceBefore2);
 
-        await this.stakingRewards.getReward({ from:ownerAddress });
-        await this.stakingRewards.getReward({ from:userAddress });
+        await this.stakingRewards.exit({ from:ownerAddress });
+        await this.stakingRewards.exit({ from:userAddress });
 
         const userBalanceAfter1 = Number(await this.rewards.balanceOf(ownerAddress));
         const userBalanceAfter2 = Number(await this.rewards.balanceOf(userAddress));
 
-        console.log("User 1 balance after getReward", userBalanceAfter1);
-        console.log("User 2 balance after getReward", userBalanceAfter2);
+        console.log("User 1 balance after exit", userBalanceAfter1);
+        console.log("User 2 balance after exit", userBalanceAfter2);
 
         expect(initialRewards1 < postRewards1).to.be.equal(true);
         expect(initialRewards2 < postRewards2).to.be.equal(true);
@@ -343,107 +318,350 @@ contract('StakingRewards', function ([ownerAddress, userAddress, userAddress1, u
       });
     });
 
-    describe('stake', function () {
-      it('cannot stake 0', async function () {
-        await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
-        await this.stakingRewards.start({ from: ownerAddress });
-        await this.stakingRewards.stake('0').should.be.rejectedWith("Cannot stake 0");
-      });
+    // describe('earned getRewards ', function () {
+    //   it('should be 0 when not staking', async function () {
+    //     assert.equal(Number(await this.stakingRewards.earned(userAddress)), Number(0));
+    //   });
+    //
+    //   it('rewardRate should increase if new rewards come before DURATION ends', async function () {
+    //     await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
+    //     await this.stakingRewards.start({ from: ownerAddress });
+    //
+    //     const initialRate = await this.stakingRewards.rewardRate();
+    //
+    //     await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
+    //     await this.stakingRewards.start({ from: ownerAddress });
+    //
+    //     const afterRate = await this.stakingRewards.rewardRate();
+    //
+    //     expect(initialRate < afterRate).to.be.equal(true);
+    //   });
+    //
+    //   it('should be > 0 when staking', async function () {
+    //     await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
+    //     await this.stakingRewards.start({ from: ownerAddress });
+    //
+    //     this.univ2.faucet(ownerAddress, 1000);
+    //     this.univ2.approve(this.stakingRewards.address, 1000, { from: ownerAddress });
+    //     await this.stakingRewards.stake(500, { from: ownerAddress });
+    //
+    //     await timeMachine.advanceTimeAndBlock(duration.seconds(3600))
+    //     expect(await this.stakingRewards.earned(ownerAddress) > 0).to.be.equal(true);
+    //   });
+    //
+    //   it('Earned reward decrease on negative rebase for a few users with the same shares', async function () {
+    //     await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
+    //     await this.stakingRewards.start({ from: ownerAddress });
+    //
+    //     // clear users balance
+    //     await this.rewards.transfer(userAddress2, await this.rewards.balanceOf(ownerAddress), { from: ownerAddress })
+    //     await this.rewards.transfer(userAddress2, await this.rewards.balanceOf(userAddress), { from: ownerAddress })
+    //
+    //     // stake from user 1
+    //     this.univ2.faucet(ownerAddress, 1000);
+    //     this.univ2.approve(this.stakingRewards.address, 1000, { from: ownerAddress });
+    //     await this.stakingRewards.stake(500, { from: ownerAddress });
+    //
+    //     // stake from user 2
+    //     this.univ2.faucet(userAddress, 1000);
+    //     this.univ2.approve(this.stakingRewards.address, 1000, { from: userAddress });
+    //     await this.stakingRewards.stake(500, { from: userAddress });
+    //
+    //     await timeMachine.advanceTimeAndBlock(duration.seconds(3600))
+    //
+    //     const initialRewards1 = await this.stakingRewards.earned(ownerAddress);
+    //     const initialRewards2 = await this.stakingRewards.earned(userAddress);
+    //
+    //     await this.rewards.rebase("-1000000000000000000", { from:ownerAddress })
+    //
+    //     const postRewards1 = await this.stakingRewards.earned(ownerAddress);
+    //     const postRewards2 = await this.stakingRewards.earned(userAddress);
+    //
+    //     const userBalanceBefore1 = Number(await this.rewards.balanceOf(ownerAddress));
+    //     const userBalanceBefore2 = Number(await this.rewards.balanceOf(userAddress));
+    //
+    //     console.log("User 1 balance before getReward", userBalanceBefore1);
+    //     console.log("User 2 balance before getReward", userBalanceBefore2);
+    //
+    //     await this.stakingRewards.getReward({ from:ownerAddress });
+    //     await this.stakingRewards.getReward({ from:userAddress });
+    //
+    //     const userBalanceAfter1 = Number(await this.rewards.balanceOf(ownerAddress));
+    //     const userBalanceAfter2 = Number(await this.rewards.balanceOf(userAddress));
+    //
+    //     console.log("User 1 balance after getReward", userBalanceAfter1);
+    //     console.log("User 2 balance after getReward", userBalanceAfter2);
+    //
+    //
+    //     expect(initialRewards1 > postRewards1).to.be.equal(true);
+    //     expect(initialRewards2 > postRewards2).to.be.equal(true);
+    //
+    //     expect(userBalanceAfter1 > userBalanceBefore1).to.be.equal(true);
+    //     expect(userBalanceAfter2 > userBalanceBefore2).to.be.equal(true);
+    //
+    //     console.log(
+    //       Number(await this.rewards.balanceOf(this.stakingRewards.address))
+    //     )
+    //   });
+    //
+    //   it('Earned reward decrease on negative rebase for a few users with NOT the same shares', async function () {
+    //     await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
+    //     await this.stakingRewards.start({ from: ownerAddress });
+    //
+    //     // clear users balance
+    //     await this.rewards.transfer(userAddress2, await this.rewards.balanceOf(ownerAddress), { from: ownerAddress })
+    //     await this.rewards.transfer(userAddress2, await this.rewards.balanceOf(userAddress), { from: ownerAddress })
+    //
+    //     // stake from user 1
+    //     this.univ2.faucet(ownerAddress, 1000);
+    //     this.univ2.approve(this.stakingRewards.address, 1000, { from: ownerAddress });
+    //     await this.stakingRewards.stake(1000, { from: ownerAddress });
+    //
+    //     // stake from user 2
+    //     this.univ2.faucet(userAddress, 1000);
+    //     this.univ2.approve(this.stakingRewards.address, 1000, { from: userAddress });
+    //     await this.stakingRewards.stake(500, { from: userAddress });
+    //
+    //     await timeMachine.advanceTimeAndBlock(duration.seconds(3600))
+    //
+    //     const initialRewards1 = await this.stakingRewards.earned(ownerAddress);
+    //     const initialRewards2 = await this.stakingRewards.earned(userAddress);
+    //
+    //     await this.rewards.rebase("-1000000000000000000", { from:ownerAddress })
+    //
+    //     const postRewards1 = await this.stakingRewards.earned(ownerAddress);
+    //     const postRewards2 = await this.stakingRewards.earned(userAddress);
+    //
+    //     const userBalanceBefore1 = Number(await this.rewards.balanceOf(ownerAddress));
+    //     const userBalanceBefore2 = Number(await this.rewards.balanceOf(userAddress));
+    //
+    //     console.log("User 1 balance before getReward", userBalanceBefore1);
+    //     console.log("User 2 balance before getReward", userBalanceBefore2);
+    //
+    //     await this.stakingRewards.getReward({ from:ownerAddress });
+    //     await this.stakingRewards.getReward({ from:userAddress });
+    //
+    //     const userBalanceAfter1 = Number(await this.rewards.balanceOf(ownerAddress));
+    //     const userBalanceAfter2 = Number(await this.rewards.balanceOf(userAddress));
+    //
+    //     console.log("User 1 balance after getReward", userBalanceAfter1);
+    //     console.log("User 2 balance after getReward", userBalanceAfter2);
+    //
+    //
+    //     expect(initialRewards1 > postRewards1).to.be.equal(true);
+    //     expect(initialRewards2 > postRewards2).to.be.equal(true);
+    //
+    //     expect(userBalanceAfter1 > userBalanceBefore1).to.be.equal(true);
+    //     expect(userBalanceAfter2 > userBalanceBefore2).to.be.equal(true);
+    //
+    //     expect(userBalanceAfter1 > userBalanceBefore2).to.be.equal(true);
+    //   });
+    //
+    //   it('Earned reward increase on positive rebase for a few users with NOT the same shares', async function () {
+    //     await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
+    //     await this.stakingRewards.start({ from: ownerAddress });
+    //
+    //     // clear users balance
+    //     await this.rewards.transfer(userAddress2, await this.rewards.balanceOf(ownerAddress), { from: ownerAddress })
+    //     await this.rewards.transfer(userAddress2, await this.rewards.balanceOf(userAddress), { from: ownerAddress })
+    //
+    //     // stake from user 1
+    //     this.univ2.faucet(ownerAddress, 1000);
+    //     this.univ2.approve(this.stakingRewards.address, 1000, { from: ownerAddress });
+    //     await this.stakingRewards.stake(500, { from: ownerAddress });
+    //
+    //     // stake from user 2
+    //     this.univ2.faucet(userAddress, 1000);
+    //     this.univ2.approve(this.stakingRewards.address, 1000, { from: userAddress });
+    //     await this.stakingRewards.stake(500, { from: userAddress });
+    //
+    //     await timeMachine.advanceTimeAndBlock(duration.seconds(3600))
+    //
+    //     const initialRewards1 = await this.stakingRewards.earned(ownerAddress);
+    //     const initialRewards2 = await this.stakingRewards.earned(userAddress);
+    //
+    //     await this.rewards.rebase("1000000000000000000", { from:ownerAddress });
+    //
+    //     const postRewards1 = await this.stakingRewards.earned(ownerAddress);
+    //     const postRewards2 = await this.stakingRewards.earned(userAddress);
+    //
+    //     const userBalanceBefore1 = Number(await this.rewards.balanceOf(ownerAddress));
+    //     const userBalanceBefore2 = Number(await this.rewards.balanceOf(userAddress));
+    //
+    //     console.log("User 1 balance before getReward", userBalanceBefore1);
+    //     console.log("User 2 balance before getReward", userBalanceBefore2);
+    //
+    //     await this.stakingRewards.getReward({ from:ownerAddress });
+    //     await this.stakingRewards.getReward({ from:userAddress });
+    //
+    //     const userBalanceAfter1 = Number(await this.rewards.balanceOf(ownerAddress));
+    //     const userBalanceAfter2 = Number(await this.rewards.balanceOf(userAddress));
+    //
+    //     console.log("User 1 balance after getReward", userBalanceAfter1);
+    //     console.log("User 2 balance after getReward", userBalanceAfter2);
+    //
+    //     expect(initialRewards1 < postRewards1).to.be.equal(true);
+    //     expect(initialRewards2 < postRewards2).to.be.equal(true);
+    //
+    //     expect(userBalanceAfter1 > userBalanceBefore1).to.be.equal(true);
+    //     expect(userBalanceAfter2 > userBalanceBefore2).to.be.equal(true);
+    //   });
+    //
+    //
+    //   it('Earned reward increase on positive rebase for a few users with the same shares', async function () {
+    //     await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
+    //     await this.stakingRewards.start({ from: ownerAddress });
+    //
+    //     // clear users balance
+    //     await this.rewards.transfer(userAddress2, await this.rewards.balanceOf(ownerAddress), { from: ownerAddress })
+    //     await this.rewards.transfer(userAddress2, await this.rewards.balanceOf(userAddress), { from: ownerAddress })
+    //
+    //     // stake from user 1
+    //     this.univ2.faucet(ownerAddress, 1000);
+    //     this.univ2.approve(this.stakingRewards.address, 1000, { from: ownerAddress });
+    //     await this.stakingRewards.stake(1000, { from: ownerAddress });
+    //
+    //     // stake from user 2
+    //     this.univ2.faucet(userAddress, 1000);
+    //     this.univ2.approve(this.stakingRewards.address, 1000, { from: userAddress });
+    //     await this.stakingRewards.stake(500, { from: userAddress });
+    //
+    //     await timeMachine.advanceTimeAndBlock(duration.seconds(3600))
+    //
+    //     const initialRewards1 = await this.stakingRewards.earned(ownerAddress);
+    //     const initialRewards2 = await this.stakingRewards.earned(userAddress);
+    //
+    //     await this.rewards.rebase("1000000000000000000", { from:ownerAddress });
+    //
+    //     const postRewards1 = await this.stakingRewards.earned(ownerAddress);
+    //     const postRewards2 = await this.stakingRewards.earned(userAddress);
+    //
+    //     const userBalanceBefore1 = Number(await this.rewards.balanceOf(ownerAddress));
+    //     const userBalanceBefore2 = Number(await this.rewards.balanceOf(userAddress));
+    //
+    //     console.log("User 1 balance before getReward", userBalanceBefore1);
+    //     console.log("User 2 balance before getReward", userBalanceBefore2);
+    //
+    //     await this.stakingRewards.getReward({ from:ownerAddress });
+    //     await this.stakingRewards.getReward({ from:userAddress });
+    //
+    //     const userBalanceAfter1 = Number(await this.rewards.balanceOf(ownerAddress));
+    //     const userBalanceAfter2 = Number(await this.rewards.balanceOf(userAddress));
+    //
+    //     console.log("User 1 balance after getReward", userBalanceAfter1);
+    //     console.log("User 2 balance after getReward", userBalanceAfter2);
+    //
+    //     expect(initialRewards1 < postRewards1).to.be.equal(true);
+    //     expect(initialRewards2 < postRewards2).to.be.equal(true);
+    //
+    //     expect(userBalanceAfter1 > userBalanceBefore1).to.be.equal(true);
+    //     expect(userBalanceAfter2 > userBalanceBefore2).to.be.equal(true);
+    //
+    //     expect(userBalanceAfter1 > userBalanceBefore2).to.be.equal(true);
+    //   });
+    // });
 
-      it('staking increases reward balance(Single-User)', async function () {
-        await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
-        await this.stakingRewards.start({ from: ownerAddress });
-        this.univ2.faucet(ownerAddress, 1000);
-        this.univ2.approve(this.stakingRewards.address, 1000, { from: ownerAddress });
-
-        const initialStakeBal = await this.stakingRewards.balanceOf(ownerAddress);
-
-        await this.stakingRewards.stake(500, { from: ownerAddress });
-
-        const postStakeBal = await this.stakingRewards.balanceOf(ownerAddress);
-
-        expect(postStakeBal > initialStakeBal).to.be.equal(true);
-      });
-
-      it('staking increases reward balance(Multiple-Users)', async function () {
-        await this.rewards.transfer(userAddress1, 50000000000, { from: ownerAddress });
-        await this.rewards.transfer(userAddress2, 50000000000, { from: ownerAddress });
-        await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
-        await this.stakingRewards.start({ from: ownerAddress });
-
-        this.univ2.faucet(ownerAddress, 1000);
-        this.univ2.faucet(userAddress1, 1000);
-        this.univ2.faucet(userAddress2, 1000);
-
-        this.univ2.approve(this.stakingRewards.address, 1000, { from: ownerAddress });
-        this.univ2.approve(this.stakingRewards.address, 1000, { from: userAddress1 });
-        this.univ2.approve(this.stakingRewards.address, 1000, { from: userAddress2 });
-
-        const initialStakeBalUesr1 = await this.stakingRewards.balanceOf(ownerAddress);
-        const initialStakeBalUesr2 = await this.stakingRewards.balanceOf(userAddress1);
-        const initialStakeBalUesr3 = await this.stakingRewards.balanceOf(userAddress2);
-
-        await this.stakingRewards.stake(500, { from: ownerAddress });
-        await this.stakingRewards.stake(400, { from: userAddress1 });
-        await this.stakingRewards.stake(300, { from: userAddress2 });
-
-        const postStakeBalUser1 = await this.stakingRewards.balanceOf(ownerAddress);
-        const postStakeBalUser2 = await this.stakingRewards.balanceOf(userAddress1);
-        const postStakeBalUser3 = await this.stakingRewards.balanceOf(userAddress2);
-
-        expect(postStakeBalUser1 > initialStakeBalUesr1).to.be.equal(true);
-        expect(postStakeBalUser2 > initialStakeBalUesr2).to.be.equal(true);
-        expect(postStakeBalUser3 > initialStakeBalUesr3).to.be.equal(true);
-      });
-    });
-
-    describe('withdraw', function () {
-      it('cannot withdraw if nothing staked', async function () {
-        await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
-        await this.stakingRewards.start({ from: ownerAddress });
-        await this.stakingRewards.withdraw('100').should.be.rejectedWith("SafeMath: subtraction overflow");
-      });
-
-      it('decreases staking balance', async function () {
-        await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
-        await this.stakingRewards.start({ from: ownerAddress });
-        this.univ2.faucet(ownerAddress, 1000);
-        this.univ2.approve(this.stakingRewards.address, 1000, { from: ownerAddress });
-        await this.stakingRewards.stake(500, { from: ownerAddress });
-
-        await this.stakingRewards.withdraw(500, { from: ownerAddress });
-
-        const postStakeBal = await this.stakingRewards.balanceOf(ownerAddress);
-        expect(postStakeBal == 0).to.be.equal(true);
-      });
-    });
-
-    describe('exit', function () {
-      it('should retrieve all earned and increase rewards bal', async function () {
-        await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
-        await this.stakingRewards.start({ from: ownerAddress });
-        await this.stakingRewards.withdraw('100').should.be.rejectedWith("SafeMath: subtraction overflow");
-      });
-
-      it('decreases staking balance', async function () {
-        await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
-        await this.stakingRewards.start({ from: ownerAddress });
-        this.univ2.faucet(ownerAddress, 1000);
-        this.univ2.approve(this.stakingRewards.address, 1000, { from: ownerAddress });
-        await this.stakingRewards.stake(500, { from: ownerAddress });
-
-        await timeMachine.advanceTimeAndBlock(duration.seconds(4838399))
-        const initialRewardBal = await this.rewards.balanceOf(ownerAddress);
-        const initialEarnedBal = await this.stakingRewards.earned(ownerAddress);
-        await this.stakingRewards.exit({ from: ownerAddress });
-        const postRewardBal = await this.rewards.balanceOf(ownerAddress);
-        const postEarnedBal = await this.stakingRewards.earned(ownerAddress);
-
-        expect(postEarnedBal < initialEarnedBal).to.be.equal(true);
-        expect(postRewardBal > initialRewardBal).to.be.equal(true);
-        expect(postEarnedBal == 0).to.be.equal(true);
-      });
-    });
+    // describe('stake', function () {
+    //   it('cannot stake 0', async function () {
+    //     await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
+    //     await this.stakingRewards.start({ from: ownerAddress });
+    //     await this.stakingRewards.stake('0').should.be.rejectedWith("Cannot stake 0");
+    //   });
+    //
+    //   it('staking increases reward balance(Single-User)', async function () {
+    //     await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
+    //     await this.stakingRewards.start({ from: ownerAddress });
+    //     this.univ2.faucet(ownerAddress, 1000);
+    //     this.univ2.approve(this.stakingRewards.address, 1000, { from: ownerAddress });
+    //
+    //     const initialStakeBal = await this.stakingRewards.balanceOf(ownerAddress);
+    //
+    //     await this.stakingRewards.stake(500, { from: ownerAddress });
+    //
+    //     const postStakeBal = await this.stakingRewards.balanceOf(ownerAddress);
+    //
+    //     expect(postStakeBal > initialStakeBal).to.be.equal(true);
+    //   });
+    //
+    //   it('staking increases reward balance(Multiple-Users)', async function () {
+    //     await this.rewards.transfer(userAddress1, 50000000000, { from: ownerAddress });
+    //     await this.rewards.transfer(userAddress2, 50000000000, { from: ownerAddress });
+    //     await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
+    //     await this.stakingRewards.start({ from: ownerAddress });
+    //
+    //     this.univ2.faucet(ownerAddress, 1000);
+    //     this.univ2.faucet(userAddress1, 1000);
+    //     this.univ2.faucet(userAddress2, 1000);
+    //
+    //     this.univ2.approve(this.stakingRewards.address, 1000, { from: ownerAddress });
+    //     this.univ2.approve(this.stakingRewards.address, 1000, { from: userAddress1 });
+    //     this.univ2.approve(this.stakingRewards.address, 1000, { from: userAddress2 });
+    //
+    //     const initialStakeBalUesr1 = await this.stakingRewards.balanceOf(ownerAddress);
+    //     const initialStakeBalUesr2 = await this.stakingRewards.balanceOf(userAddress1);
+    //     const initialStakeBalUesr3 = await this.stakingRewards.balanceOf(userAddress2);
+    //
+    //     await this.stakingRewards.stake(500, { from: ownerAddress });
+    //     await this.stakingRewards.stake(400, { from: userAddress1 });
+    //     await this.stakingRewards.stake(300, { from: userAddress2 });
+    //
+    //     const postStakeBalUser1 = await this.stakingRewards.balanceOf(ownerAddress);
+    //     const postStakeBalUser2 = await this.stakingRewards.balanceOf(userAddress1);
+    //     const postStakeBalUser3 = await this.stakingRewards.balanceOf(userAddress2);
+    //
+    //     expect(postStakeBalUser1 > initialStakeBalUesr1).to.be.equal(true);
+    //     expect(postStakeBalUser2 > initialStakeBalUesr2).to.be.equal(true);
+    //     expect(postStakeBalUser3 > initialStakeBalUesr3).to.be.equal(true);
+    //   });
+    // });
+    //
+    // describe('withdraw', function () {
+    //   it('cannot withdraw if nothing staked', async function () {
+    //     await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
+    //     await this.stakingRewards.start({ from: ownerAddress });
+    //     await this.stakingRewards.withdraw('100').should.be.rejectedWith("SafeMath: subtraction overflow");
+    //   });
+    //
+    //   it('decreases staking balance', async function () {
+    //     await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
+    //     await this.stakingRewards.start({ from: ownerAddress });
+    //     this.univ2.faucet(ownerAddress, 1000);
+    //     this.univ2.approve(this.stakingRewards.address, 1000, { from: ownerAddress });
+    //     await this.stakingRewards.stake(500, { from: ownerAddress });
+    //
+    //     await this.stakingRewards.withdraw(500, { from: ownerAddress });
+    //
+    //     const postStakeBal = await this.stakingRewards.balanceOf(ownerAddress);
+    //     expect(postStakeBal == 0).to.be.equal(true);
+    //   });
+    // });
+    //
+    // describe('exit', function () {
+    //   it('should retrieve all earned and increase rewards bal', async function () {
+    //     await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
+    //     await this.stakingRewards.start({ from: ownerAddress });
+    //     await this.stakingRewards.withdraw('100').should.be.rejectedWith("SafeMath: subtraction overflow");
+    //   });
+    //
+    //   it('decreases staking balance', async function () {
+    //     await this.rewards.transfer(this.stakingRewards.address, 50000000000, { from: ownerAddress });
+    //     await this.stakingRewards.start({ from: ownerAddress });
+    //     this.univ2.faucet(ownerAddress, 1000);
+    //     this.univ2.approve(this.stakingRewards.address, 1000, { from: ownerAddress });
+    //     await this.stakingRewards.stake(500, { from: ownerAddress });
+    //
+    //     await timeMachine.advanceTimeAndBlock(duration.seconds(4838399))
+    //     const initialRewardBal = await this.rewards.balanceOf(ownerAddress);
+    //     const initialEarnedBal = await this.stakingRewards.earned(ownerAddress);
+    //     await this.stakingRewards.exit({ from: ownerAddress });
+    //     const postRewardBal = await this.rewards.balanceOf(ownerAddress);
+    //     const postEarnedBal = await this.stakingRewards.earned(ownerAddress);
+    //
+    //     expect(postEarnedBal < initialEarnedBal).to.be.equal(true);
+    //     expect(postRewardBal > initialRewardBal).to.be.equal(true);
+    //     expect(postEarnedBal == 0).to.be.equal(true);
+    //   });
+    // });
 
   });
 });

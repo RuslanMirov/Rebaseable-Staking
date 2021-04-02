@@ -85,13 +85,12 @@ contract StakingRewards is RewardsDistributionRecipient, ReentrancyGuard {
         _totalSupply = _totalSupply.add(amount);
         _balances[msg.sender] = _balances[msg.sender].add(amount);
         stakingToken.safeTransferFrom(msg.sender, address(this), amount);
-        
+
         emit Staked(msg.sender, amount);
     }
 
     function withdraw(uint256 amount) public nonReentrant syncRewardRate {
         require(amount > 0, "Cannot withdraw 0");
-        _getReward();
         _totalSupply = _totalSupply.sub(amount);
         _balances[msg.sender] = _balances[msg.sender].sub(amount);
         stakingToken.safeTransfer(msg.sender, amount);
@@ -114,8 +113,9 @@ contract StakingRewards is RewardsDistributionRecipient, ReentrancyGuard {
 
     function exit() external syncRewardRate {
         withdraw(_balances[msg.sender]);
+        _getReward();
     }
-    
+
     function syncRewardRateValue() public view returns (uint256) {
       uint balance = rewardsToken.balanceOf(address(this));
 
